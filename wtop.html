@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word to PDF Converter | AI Enhanced</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --gray: #6c757d;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+            font-weight: 600;
+        }
+
+        .tab:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .card-header .icon {
+            margin-right: 0.8rem;
+            font-size: 1.5rem;
+        }
+
+        .input-area {
+            width: 100%;
+            min-height: 300px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .input-area:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .preview-area {
+            min-height: 300px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            background-color: #f9f9f9;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .preview-area h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-area p {
+            margin-bottom: 0.8rem;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #6511a0;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray);
+        }
+
+        .btn-outline:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #42963c;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .ai-features {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+
+        .ai-features h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .ai-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .ai-option {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .ai-option:hover {
+            background-color: #e9ecef;
+        }
+
+        .ai-option input {
+            margin-right: 0.8rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area p {
+            color: var(--gray);
+        }
+
+        .file-info {
+            display: none;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+
+        .file-info.active {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-info .file-name {
+            font-weight: 600;
+        }
+
+        .pdf-edit-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pdf-edit-tool {
+            padding: 0.5rem 1rem;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pdf-edit-tool:hover {
+            background-color: #e9ecef;
+        }
+
+        .pdf-edit-tool.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--gray);
+            border-top: 1px solid #eee;
+            margin-top: 2rem;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background-color: var(--success);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .word-count {
+            text-align: right;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .conversion-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .conversion-option {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .conversion-option:hover {
+            background-color: #e9ecef;
+        }
+
+        .conversion-option.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .edit-mode {
+            display: none;
+        }
+
+        .edit-mode.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Document Converter Pro</h1>
+            <p>Convert between Word and PDF with AI-powered enhancements</p>
+            <div class="ai-badge">Powered by AI</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="word-to-pdf">Word to PDF</div>
+            <div class="tab" data-tab="pdf-to-word">PDF to Word</div>
+            <div class="tab" data-tab="pdf-edit">PDF Editor</div>
+        </div>
+
+        <!-- Word to PDF Tab -->
+        <div class="tab-content active" id="word-to-pdf">
+            <main>
+                <section class="card">
+                    <div class="card-header">
+                        <div class="icon">📝</div>
+                        <h2>Input Text</h2>
+                    </div>
+                    
+                    <div class="upload-area" id="wordUploadArea">
+                        <i>📁</i>
+                        <h3>Upload Word Document</h3>
+                        <p>Drag & drop your .doc or .docx file here or click to browse</p>
+                        <input type="file" id="wordFileInput" accept=".doc,.docx,.txt" style="display: none;">
+                    </div>
+                    
+                    <div class="file-info" id="wordFileInfo">
+                        <div>
+                            <span class="file-name" id="wordFileName">document.docx</span>
+                            <span id="wordFileSize">(2.4 MB)</span>
+                        </div>
+                        <button class="btn btn-outline" id="removeWordFile">Remove</button>
+                    </div>
+                    
+                    <textarea class="input-area" id="wordInputArea" placeholder="Or type or paste your text here..."></textarea>
+                    <div class="word-count">Words: <span id="wordCount">0</span></div>
+                    
+                    <div class="toolbar">
+                        <button class="btn btn-primary" id="convertToPdfBtn">
+                            <i>📄</i> Convert to PDF
+                        </button>
+                        <button class="btn btn-outline" id="clearWordBtn">
+                            <i>🗑️</i> Clear Text
+                        </button>
+                        <button class="btn btn-secondary" id="sampleWordBtn">
+                            <i>📋</i> Load Sample
+                        </button>
+                    </div>
+
+                    <div class="ai-features">
+                        <h3>AI Text Enhancement</h3>
+                        <div class="ai-options">
+                            <label class="ai-option">
+                                <input type="checkbox" id="grammarCheck"> Fix Grammar & Spelling
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="improveStyle"> Improve Writing Style
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="summarize"> Summarize Text
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="formatText"> Format for PDF
+                            </label>
+                        </div>
+                        <button class="btn btn-secondary" id="enhanceWordBtn" style="margin-top: 1rem; width: 100%;">
+                            <i>✨</i> Apply AI Enhancements
+                        </button>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">
+                        <div class="icon">👁️</div>
+                        <h2>PDF Preview</h2>
+                    </div>
+                    <div class="preview-area" id="pdfPreview">
+                        <p>Your PDF preview will appear here after conversion.</p>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <button class="btn btn-success" id="downloadPdfBtn" disabled>
+                            <i>⬇️</i> Download PDF
+                        </button>
+                        <button class="btn btn-outline" id="printPdfBtn">
+                            <i>🖨️</i> Print PDF
+                        </button>
+                    </div>
+
+                    <div class="ai-features">
+                        <h3>AI PDF Features</h3>
+                        <div class="ai-options">
+                            <label class="ai-option">
+                                <input type="checkbox" id="addToc"> Add Table of Contents
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="optimizeLayout"> Optimize Layout
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="addWatermark"> Add Watermark
+                            </label>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- PDF to Word Tab -->
+        <div class="tab-content" id="pdf-to-word">
+            <main>
+                <section class="card">
+                    <div class="card-header">
+                        <div class="icon">📄</div>
+                        <h2>Upload PDF</h2>
+                    </div>
+                    
+                    <div class="upload-area" id="pdfUploadArea">
+                        <i>📁</i>
+                        <h3>Upload PDF Document</h3>
+                        <p>Drag & drop your .pdf file here or click to browse</p>
+                        <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;">
+                    </div>
+                    
+                    <div class="file-info" id="pdfFileInfo">
+                        <div>
+                            <span class="file-name" id="pdfFileName">document.pdf</span>
+                            <span id="pdfFileSize">(1.8 MB)</span>
+                        </div>
+                        <button class="btn btn-outline" id="removePdfFile">Remove</button>
+                    </div>
+                    
+                    <div class="conversion-options">
+                        <div class="conversion-option active" data-format="docx">DOCX Format</div>
+                        <div class="conversion-option" data-format="doc">DOC Format</div>
+                        <div class="conversion-option" data-format="txt">Plain Text</div>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <button class="btn btn-primary" id="convertToWordBtn">
+                            <i>📝</i> Convert to Word
+                        </button>
+                        <button class="btn btn-outline" id="clearPdfBtn">
+                            <i>🗑️</i> Clear
+                        </button>
+                    </div>
+
+                    <div class="ai-features">
+                        <h3>AI Conversion Options</h3>
+                        <div class="ai-options">
+                            <label class="ai-option">
+                                <input type="checkbox" id="preserveFormatting"> Preserve Formatting
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="extractImages"> Extract Images
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="ocrEnabled"> OCR for Scanned PDFs
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">
+                        <div class="icon">📝</div>
+                        <h2>Word Output</h2>
+                    </div>
+                    <div class="preview-area" id="wordOutput">
+                        <p>Your converted Word document will appear here.</p>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <button class="btn btn-success" id="downloadWordBtn" disabled>
+                            <i>⬇️</i> Download Word
+                        </button>
+                        <button class="btn btn-outline" id="copyTextBtn">
+                            <i>📋</i> Copy Text
+                        </button>
+                    </div>
+
+                    <div class="ai-features">
+                        <h3>AI Text Processing</h3>
+                        <div class="ai-options">
+                            <label class="ai-option">
+                                <input type="checkbox" id="cleanText"> Clean Extracted Text
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="detectLists"> Detect Lists & Tables
+                            </label>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- PDF Editor Tab -->
+        <div class="tab-content" id="pdf-edit">
+            <main>
+                <section class="card">
+                    <div class="card-header">
+                        <div class="icon">✏️</div>
+                        <h2>PDF Editor</h2>
+                    </div>
+                    
+                    <div class="upload-area" id="editPdfUploadArea">
+                        <i>📁</i>
+                        <h3>Upload PDF to Edit</h3>
+                        <p>Drag & drop your .pdf file here or click to browse</p>
+                        <input type="file" id="editPdfFileInput" accept=".pdf" style="display: none;">
+                    </div>
+                    
+                    <div class="file-info" id="editPdfFileInfo">
+                        <div>
+                            <span class="file-name" id="editPdfFileName">document.pdf</span>
+                            <span id="editPdfFileSize">(2.1 MB)</span>
+                        </div>
+                        <button class="btn btn-outline" id="removeEditPdfFile">Remove</button>
+                    </div>
+                    
+                    <div class="pdf-edit-tools">
+                        <div class="pdf-edit-tool active" data-tool="text">Add Text</div>
+                        <div class="pdf-edit-tool" data-tool="highlight">Highlight</div>
+                        <div class="pdf-edit-tool" data-tool="draw">Draw</div>
+                        <div class="pdf-edit-tool" data-tool="erase">Erase</div>
+                        <div class="pdf-edit-tool" data-tool="rotate">Rotate</div>
+                    </div>
+                    
+                    <div class="edit-mode" id="textEditMode">
+                        <textarea class="input-area" placeholder="Enter text to add to the PDF..."></textarea>
+                        <div class="toolbar">
+                            <button class="btn btn-primary" id="addTextBtn">Add Text to PDF</button>
+                            <select id="fontSize">
+                                <option value="12">12pt</option>
+                                <option value="14">14pt</option>
+                                <option value="16">16pt</option>
+                                <option value="18">18pt</option>
+                                <option value="20">20pt</option>
+                            </select>
+                            <select id="fontColor">
+                                <option value="black">Black</option>
+                                <option value="red">Red</option>
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <button class="btn btn-primary" id="saveEditedPdfBtn" disabled>
+                            <i>💾</i> Save Edited PDF
+                        </button>
+                        <button class="btn btn-outline" id="resetEditBtn">
+                            <i>🔄</i> Reset Changes
+                        </button>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">
+                        <div class="icon">👁️</div>
+                        <h2>PDF Preview</h2>
+                    </div>
+                    <div class="preview-area" id="editPdfPreview">
+                        <p>Your PDF will appear here for editing.</p>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <button class="btn btn-success" id="downloadEditedPdfBtn" disabled>
+                            <i>⬇️</i> Download Edited PDF
+                        </button>
+                        <button class="btn btn-warning" id="aiEnhancePdfBtn">
+                            <i>✨</i> AI Enhance PDF
+                        </button>
+                    </div>
+
+                    <div class="ai-features">
+                        <h3>AI PDF Enhancement</h3>
+                        <div class="ai-options">
+                            <label class="ai-option">
+                                <input type="checkbox" id="compressPdf"> Compress PDF
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="improveQuality"> Improve Image Quality
+                            </label>
+                            <label class="ai-option">
+                                <input type="checkbox" id="extractContent"> Extract Key Content
+                            </label>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing your request with AI...</p>
+        </div>
+
+        <section class="feature-list">
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <h3>AI-Powered Enhancement</h3>
+                <p>Improve your documents with advanced AI algorithms for better grammar, style, and readability.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔄</div>
+                <h3>Bidirectional Conversion</h3>
+                <p>Convert between Word and PDF formats in both directions with high accuracy.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">✏️</div>
+                <h3>PDF Editing</h3>
+                <p>Edit your PDFs directly in the browser - add text, highlight, draw, and more.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure & Private</h3>
+                <p>Your documents are processed securely and never stored on our servers.</p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Document Converter Pro &copy; 2023 | All-in-One Document Solution</p>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification">Operation completed successfully!</div>
+
+    <script>
+        // DOM Elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Word to PDF elements
+        const wordInputArea = document.getElementById('wordInputArea');
+        const pdfPreview = document.getElementById('pdfPreview');
+        const convertToPdfBtn = document.getElementById('convertToPdfBtn');
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+        const clearWordBtn = document.getElementById('clearWordBtn');
+        const sampleWordBtn = document.getElementById('sampleWordBtn');
+        const enhanceWordBtn = document.getElementById('enhanceWordBtn');
+        const printPdfBtn = document.getElementById('printPdfBtn');
+        const wordCount = document.getElementById('wordCount');
+        
+        // PDF to Word elements
+        const convertToWordBtn = document.getElementById('convertToWordBtn');
+        const downloadWordBtn = document.getElementById('downloadWordBtn');
+        const clearPdfBtn = document.getElementById('clearPdfBtn');
+        const copyTextBtn = document.getElementById('copyTextBtn');
+        const wordOutput = document.getElementById('wordOutput');
+        const conversionOptions = document.querySelectorAll('.conversion-option');
+        
+        // PDF Editor elements
+        const saveEditedPdfBtn = document.getElementById('saveEditedPdfBtn');
+        const resetEditBtn = document.getElementById('resetEditBtn');
+        const downloadEditedPdfBtn = document.getElementById('downloadEditedPdfBtn');
+        const aiEnhancePdfBtn = document.getElementById('aiEnhancePdfBtn');
+        const addTextBtn = document.getElementById('addTextBtn');
+        const editPdfPreview = document.getElementById('editPdfPreview');
+        const editTools = document.querySelectorAll('.pdf-edit-tool');
+        
+        // Upload areas
+        const wordUploadArea = document.getElementById('wordUploadArea');
+        const wordFileInput = document.getElementById('wordFileInput');
+        const wordFileInfo = document.getElementById('wordFileInfo');
+        const removeWordFile = document.getElementById('removeWordFile');
+        
+        const pdfUploadArea = document.getElementById('pdfUploadArea');
+        const pdfFileInput = document.getElementById('pdfFileInput');
+        const pdfFileInfo = document.getElementById('pdfFileInfo');
+        const removePdfFile = document.getElementById('removePdfFile');
+        
+        const editPdfUploadArea = document.getElementById('editPdfUploadArea');
+        const editPdfFileInput = document.getElementById('editPdfFileInput');
+        const editPdfFileInfo = document.getElementById('editPdfFileInfo');
+        const removeEditPdfFile = document.getElementById('removeEditPdfFile');
+        
+        // Other elements
+        const loading = document.getElementById('loading');
+        const loadingText = document.getElementById('loadingText');
+        const notification = document.getElementById('notification');
+        const textEditMode = document.getElementById('textEditMode');
+
+        // Sample text
+        const sampleText = `# The Future of Technology
+
+        Technology is evolving at an unprecedented pace, transforming how we live, work, and interact with the world around us. From artificial intelligence to quantum computing, these advancements promise to reshape our future in ways we can only begin to imagine.
+
+        ## Artificial Intelligence
+
+        AI is no longer a concept of science fiction. It's here, and it's revolutionizing industries from healthcare to finance. Machine learning algorithms can now diagnose diseases with remarkable accuracy, while natural language processing enables more intuitive human-computer interactions.
+
+        ## The Internet of Things
+
+        The IoT connects everyday objects to the internet, creating smart environments that enhance efficiency and convenience. Smart homes adjust temperature and lighting based on occupancy, while connected vehicles communicate to optimize traffic flow and reduce accidents.
+
+        ## Challenges and Opportunities
+
+        With these advancements come important considerations about privacy, security, and the ethical implications of technology. As we embrace these innovations, we must also develop frameworks to ensure they benefit humanity as a whole.
+
+        The future is not something we enter; it's something we create. Let's build a technological future that enhances human potential while preserving our core values.`;
+
+        // Event Listeners for Tabs
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update active tab content
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Word to PDF Event Listeners
+        wordInputArea.addEventListener('input', updateWordCount);
+        convertToPdfBtn.addEventListener('click', convertToPDF);
+        downloadPdfBtn.addEventListener('click', downloadPDF);
+        clearWordBtn.addEventListener('click', clearWordText);
+        sampleWordBtn.addEventListener('click', loadSampleWord);
+        enhanceWordBtn.addEventListener('click', enhanceWordText);
+        printPdfBtn.addEventListener('click', printPDF);
+
+        // PDF to Word Event Listeners
+        convertToWordBtn.addEventListener('click', convertToWord);
+        downloadWordBtn.addEventListener('click', downloadWord);
+        clearPdfBtn.addEventListener('click', clearPdf);
+        copyTextBtn.addEventListener('click', copyText);
+        
+        // PDF Editor Event Listeners
+        saveEditedPdfBtn.addEventListener('click', saveEditedPDF);
+        resetEditBtn.addEventListener('click', resetEdit);
+        downloadEditedPdfBtn.addEventListener('click', downloadEditedPDF);
+        aiEnhancePdfBtn.addEventListener('click', aiEnhancePDF);
+        addTextBtn.addEventListener('click', addTextToPDF);
+
+        // Upload Area Event Listeners
+        wordUploadArea.addEventListener('click', () => wordFileInput.click());
+        wordUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            wordUploadArea.style.borderColor = 'var(--primary)';
+            wordUploadArea.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
+        });
+        wordUploadArea.addEventListener('dragleave', () => {
+            wordUploadArea.style.borderColor = '#ddd';
+            wordUploadArea.style.backgroundColor = 'transparent';
+        });
+        wordUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            wordUploadArea.style.borderColor = '#ddd';
+            wordUploadArea.style.backgroundColor = 'transparent';
+            handleFileUpload(e.dataTransfer.files[0], 'word');
+        });
+        wordFileInput.addEventListener('change', (e) => {
+            handleFileUpload(e.target.files[0], 'word');
+        });
+        removeWordFile.addEventListener('click', () => {
+            wordFileInfo.classList.remove('active');
+            wordFileInput.value = '';
+        });
+
+        // PDF Upload Area
+        pdfUploadArea.addEventListener('click', () => pdfFileInput.click());
+        pdfUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            pdfUploadArea.style.borderColor = 'var(--primary)';
+            pdfUploadArea.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
+        });
+        pdfUploadArea.addEventListener('dragleave', () => {
+            pdfUploadArea.style.borderColor = '#ddd';
+            pdfUploadArea.style.backgroundColor = 'transparent';
+        });
+        pdfUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            pdfUploadArea.style.borderColor = '#ddd';
+            pdfUploadArea.style.backgroundColor = 'transparent';
+            handleFileUpload(e.dataTransfer.files[0], 'pdf');
+        });
+        pdfFileInput.addEventListener('change', (e) => {
+            handleFileUpload(e.target.files[0], 'pdf');
+        });
+        removePdfFile.addEventListener('click', () => {
+            pdfFileInfo.classList.remove('active');
+            pdfFileInput.value = '';
+        });
+
+        // Edit PDF Upload Area
+        editPdfUploadArea.addEventListener('click', () => editPdfFileInput.click());
+        editPdfUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            editPdfUploadArea.style.borderColor = 'var(--primary)';
+            editPdfUploadArea.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
+        });
+        editPdfUploadArea.addEventListener('dragleave', () => {
+            editPdfUploadArea.style.borderColor = '#ddd';
+            editPdfUploadArea.style.backgroundColor = 'transparent';
+        });
+        editPdfUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            editPdfUploadArea.style.borderColor = '#ddd';
+            editPdfUploadArea.style.backgroundColor = 'transparent';
+            handleFileUpload(e.dataTransfer.files[0], 'editPdf');
+        });
+        editPdfFileInput.addEventListener('change', (e) => {
+            handleFileUpload(e.target.files[0], 'editPdf');
+        });
+        removeEditPdfFile.addEventListener('click', () => {
+            editPdfFileInfo.classList.remove('active');
+            editPdfFileInput.value = '';
+            saveEditedPdfBtn.disabled = true;
+            downloadEditedPdfBtn.disabled = true;
+        });
+
+        // Conversion Options
+        conversionOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                conversionOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+
+        // Edit Tools
+        editTools.forEach(tool => {
+            tool.addEventListener('click', () => {
+                if (tool.getAttribute('data-tool') === 'text') {
+                    textEditMode.classList.add('active');
+                } else {
+                    textEditMode.classList.remove('active');
+                }
+                
+                editTools.forEach(t => t.classList.remove('active'));
+                tool.classList.add('active');
+            });
+        });
+
+        // Functions
+        function updateWordCount() {
+            const text = wordInputArea.value.trim();
+            const count = text ? text.split(/\s+/).length : 0;
+            wordCount.textContent = count;
+        }
+
+        function handleFileUpload(file, type) {
+            if (!file) return;
+            
+            let fileInfo, fileName, fileSize, uploadArea;
+            
+            if (type === 'word') {
+                fileInfo = wordFileInfo;
+                fileName = document.getElementById('wordFileName');
+                fileSize = document.getElementById('wordFileSize');
+                uploadArea = wordUploadArea;
+            } else if (type === 'pdf') {
+                fileInfo = pdfFileInfo;
+                fileName = document.getElementById('pdfFileName');
+                fileSize = document.getElementById('pdfFileSize');
+                uploadArea = pdfUploadArea;
+            } else if (type === 'editPdf') {
+                fileInfo = editPdfFileInfo;
+                fileName = document.getElementById('editPdfFileName');
+                fileSize = document.getElementById('editPdfFileSize');
+                uploadArea = editPdfUploadArea;
+                saveEditedPdfBtn.disabled = false;
+                downloadEditedPdfBtn.disabled = false;
+            }
+            
+            // Display file info
+            fileName.textContent = file.name;
+            fileSize.textContent = `(${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            fileInfo.classList.add('active');
+            
+            // Simulate file processing
+            showLoading(true, `Processing ${file.name}...`);
+            
+            setTimeout(() => {
+                showLoading(false);
+                showNotification(`${file.name} uploaded successfully!`);
+                
+                // If it's a Word file, try to extract text
+                if (type === 'word' && (file.name.endsWith('.txt') || file.name.endsWith('.doc') || file.name.endsWith('.docx'))) {
+                    // In a real app, you would use a library to extract text from Word files
+                    // For this demo, we'll just load the sample text
+                    wordInputArea.value = sampleText;
+                    updateWordCount();
+                }
+                
+                // If it's a PDF for editing, show a preview
+                if (type === 'editPdf') {
+                    editPdfPreview.innerHTML = `
+                        <h3>${file.name}</h3>
+                        <p>This is a preview of your PDF document. In a real application, you would see the actual PDF content here.</p>
+                        <p>You can now use the editing tools to modify this PDF.</p>
+                    `;
+                }
+            }, 1500);
+        }
+
+        function convertToPDF() {
+            const text = wordInputArea.value.trim();
+            if (!text && !wordFileInfo.classList.contains('active')) {
+                showNotification('Please enter some text or upload a file to convert', 'error');
+                return;
+            }
+
+            showLoading(true, 'Converting to PDF...');
+            
+            // Simulate processing time
+            setTimeout(() => {
+                // Apply AI enhancements if selected
+                let processedText = text || sampleText;
+                if (document.getElementById('grammarCheck').checked) {
+                    processedText = applyGrammarCorrection(processedText);
+                }
+                if (document.getElementById('improveStyle').checked) {
+                    processedText = improveWritingStyle(processedText);
+                }
+                if (document.getElementById('summarize').checked) {
+                    processedText = summarizeText(processedText);
+                }
+                if (document.getElementById('formatText').checked) {
+                    processedText = formatForPDF(processedText);
+                }
+
+                // Generate PDF preview
+                generatePDFPreview(processedText);
+                
+                showLoading(false);
+                downloadPdfBtn.disabled = false;
+                showNotification('Text successfully converted to PDF!');
+            }, 1500);
+        }
+
+        function generatePDFPreview(text) {
+            // Simple PDF preview simulation
+            const lines = text.split('\n');
+            let html = '';
+            
+            lines.forEach(line => {
+                if (line.trim() === '') return;
+                
+                if (line.startsWith('# ')) {
+                    html += `<h1>${line.substring(2)}</h1>`;
+                } else if (line.startsWith('## ')) {
+                    html += `<h2>${line.substring(3)}</h2>`;
+                } else if (line.startsWith('### ')) {
+                    html += `<h3>${line.substring(4)}</h3>`;
+                } else {
+                    html += `<p>${line}</p>`;
+                }
+            });
+            
+            pdfPreview.innerHTML = html;
+        }
+
+        function convertToWord() {
+            if (!pdfFileInfo.classList.contains('active')) {
+                showNotification('Please upload a PDF file first', 'error');
+                return;
+            }
+
+            showLoading(true, 'Converting PDF to Word...');
+            
+            // Simulate processing time
+            setTimeout(() => {
+                const activeFormat = document.querySelector('.conversion-option.active').getAttribute('data-format');
+                
+                // Generate Word output preview
+                wordOutput.innerHTML = `
+                    <h3>Converted Document</h3>
+                    <p>This is a preview of your PDF converted to ${activeFormat.toUpperCase()} format.</p>
+                    <p>In a real application, this would show the actual extracted text from your PDF.</p>
+                    <p>The AI has processed the document and preserved the formatting as requested.</p>
+                `;
+                
+                showLoading(false);
+                downloadWordBtn.disabled = false;
+                showNotification(`PDF successfully converted to ${activeFormat.toUpperCase()}!`);
+            }, 2000);
+        }
+
+        function downloadPDF() {
+            showNotification('PDF download started!');
+            // In a real implementation, this would generate and download an actual PDF file
+            setTimeout(() => {
+                showNotification('PDF downloaded successfully!');
+            }, 1000);
+        }
+
+        function downloadWord() {
+            const activeFormat = document.querySelector('.conversion-option.active').getAttribute('data-format');
+            showNotification(`${activeFormat.toUpperCase()} download started!`);
+            setTimeout(() => {
+                showNotification('Word document downloaded successfully!');
+            }, 1000);
+        }
+
+        function downloadEditedPDF() {
+            showNotification('Edited PDF download started!');
+            setTimeout(() => {
+                showNotification('Edited PDF downloaded successfully!');
+            }, 1000);
+        }
+
+        function clearWordText() {
+            wordInputArea.value = '';
+            pdfPreview.innerHTML = '<p>Your PDF preview will appear here after conversion.</p>';
+            downloadPdfBtn.disabled = true;
+            updateWordCount();
+            showNotification('Text cleared');
+        }
+
+        function clearPdf() {
+            pdfFileInfo.classList.remove('active');
+            pdfFileInput.value = '';
+            wordOutput.innerHTML = '<p>Your converted Word document will appear here.</p>';
+            downloadWordBtn.disabled = true;
+            showNotification('PDF cleared');
+        }
+
+        function loadSampleWord() {
+            wordInputArea.value = sampleText;
+            updateWordCount();
+            showNotification('Sample text loaded');
+        }
+
+        function enhanceWordText() {
+            const text = wordInputArea.value.trim();
+            if (!text) {
+                showNotification('Please enter some text to enhance', 'error');
+                return;
+            }
+
+            showLoading(true, 'Applying AI enhancements...');
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                let enhancedText = text;
+                
+                // Apply selected enhancements
+                if (document.getElementById('grammarCheck').checked) {
+                    enhancedText = applyGrammarCorrection(enhancedText);
+                }
+                if (document.getElementById('improveStyle').checked) {
+                    enhancedText = improveWritingStyle(enhancedText);
+                }
+                if (document.getElementById('summarize').checked) {
+                    enhancedText = summarizeText(enhancedText);
+                }
+                if (document.getElementById('formatText').checked) {
+                    enhancedText = formatForPDF(enhancedText);
+                }
+                
+                wordInputArea.value = enhancedText;
+                updateWordCount();
+                showLoading(false);
+                showNotification('AI enhancements applied successfully!');
+            }, 2000);
+        }
+
+        function printPDF() {
+            window.print();
+        }
+
+        function copyText() {
+            // In a real app, this would copy the actual extracted text
+            navigator.clipboard.writeText("This is sample text from the converted document. In a real application, this would be the actual text extracted from your PDF.");
+            showNotification('Text copied to clipboard!');
+        }
+
+        function saveEditedPDF() {
+            showLoading(true, 'Saving edited PDF...');
+            setTimeout(() => {
+                showLoading(false);
+                showNotification('PDF edits saved successfully!');
+            }, 1000);
+        }
+
+        function resetEdit() {
+            editPdfPreview.innerHTML = '<p>Your PDF will appear here for editing.</p>';
+            showNotification('All changes reset');
+        }
+
+        function aiEnhancePDF() {
+            showLoading(true, 'Applying AI enhancements to PDF...');
+            setTimeout(() => {
+                showLoading(false);
+                showNotification('PDF enhanced with AI successfully!');
+            }, 1500);
+        }
+
+        function addTextToPDF() {
+            const text = document.querySelector('#textEditMode textarea').value;
+            if (!text) {
+                showNotification('Please enter some text to add', 'error');
+                return;
+            }
+            
+            editPdfPreview.innerHTML += `<p style="color: ${document.getElementById('fontColor').value}; font-size: ${document.getElementById('fontSize').value}pt;">${text}</p>`;
+            document.querySelector('#textEditMode textarea').value = '';
+            showNotification('Text added to PDF');
+        }
+
+        function showLoading(show, text = 'Processing your request with AI...') {
+            loadingText.textContent = text;
+            loading.style.display = show ? 'block' : 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.style.backgroundColor = 'var(--danger)';
+            } else if (type === 'warning') {
+                notification.style.backgroundColor = 'var(--warning)';
+                notification.style.color = 'var(--dark)';
+            } else {
+                notification.style.backgroundColor = 'var(--success)';
+                notification.style.color = 'white';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // AI Enhancement Functions (simulated)
+        function applyGrammarCorrection(text) {
+            // In a real implementation, this would call an AI API
+            return text.replace(/teh/g, 'the')
+                      .replace(/adn/g, 'and')
+                      .replace(/recieve/g, 'receive');
+        }
+
+        function improveWritingStyle(text) {
+            // Simulate style improvement
+            return text.replace(/very/g, '')
+                      .replace(/really/g, '')
+                      .replace(/a lot/g, 'significantly')
+                      .replace(/get/g, 'obtain')
+                      .replace(/good/g, 'excellent');
+        }
+
+        function summarizeText(text) {
+            // Simulate text summarization
+            const sentences = text.split('.');
+            if (sentences.length <= 3) return text;
+            
+            // Return first few sentences as summary
+            return sentences.slice(0, 3).join('.') + '.';
+        }
+
+        function formatForPDF(text) {
+            // Simulate formatting for PDF
+            return text.replace(/\n/g, '\n\n')
+                      .replace(/# (.*)/g, '# $1\n')
+                      .replace(/## (.*)/g, '## $1\n');
+        }
+
+        // Initialize
+        updateWordCount();
+    </script>
+</body>
+</html>
