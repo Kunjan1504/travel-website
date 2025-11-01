@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WanderWorld — Discover. Dream. Depart.</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --sky:#1E90FF; /* primary */
+      --warm:#FFD700; /* accent */
+      --leaf:#A7C957; /* secondary */
+      --bg:#ffffff;
+      --muted:#6b7280;
+      --card: rgba(255,255,255,0.7);
+      --glass: rgba(255,255,255,0.12);
+      --radius:14px;
+      --glass-border: rgba(255,255,255,0.2);
+      --shadow: 0 6px 20px rgba(18,38,63,0.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(180deg,#f7fbff 0%, #ffffff 40%);
+      color:#0b1220; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* container */
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;padding:14px 0
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{font-family:'Pacifico';font-size:22px;color:var(--sky)}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{color:var(--muted);text-decoration:none;font-weight:600}
+    .cta{background:linear-gradient(90deg,var(--sky),#3fb0ff);color:white;padding:10px 14px;border-radius:12px;font-weight:700;border:none}
+
+    /* Hero */
+    .hero{position:relative;border-radius:20px;overflow:hidden;margin:18px 0;padding:36px;background:linear-gradient(90deg, rgba(30,144,255,0.08), rgba(167,201,87,0.03));}
+    .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center}
+    .hero h1{font-family:'Poppins';margin:0;font-size:38px;line-height:1.02;color:#06203a}
+    .tag{color:var(--muted);margin-top:8px}
+
+    /* Search */
+    .search-card{background:rgba(255,255,255,0.9);padding:18px;border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--glass-border)}
+    .search-row{display:flex;gap:8px}
+    .search-row input, .search-row select{flex:1;padding:12px;border-radius:10px;border:1px solid #e6eefc;background:transparent}
+    .search-btn{background:var(--sky);color:white;padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+
+    /* Cards */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.86));border-radius:12px;padding:12px;box-shadow:var(--shadow);border:1px solid rgba(10,20,40,0.03)}
+    .card img{width:100%;height:140px;object-fit:cover;border-radius:8px}
+    .muted{color:var(--muted);font-size:13px}
+
+    /* AI Planner */
+    .ai-planner{background:linear-gradient(180deg,#ffffff, rgba(235,247,255,0.6));padding:14px;border-radius:12px;border:1px dashed rgba(30,144,255,0.12)}
+    .ai-chat{height:220px;overflow:auto;padding:10px;border-radius:10px;background:linear-gradient(180deg,#f8fbff,#ffffff)}
+    .ai-input{display:flex;gap:8px;margin-top:10px}
+    .pill{padding:6px 10px;border-radius:999px;border:1px solid rgba(10,20,40,0.06);background:white}
+
+    /* map mock */
+    .map{height:260px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#e8f6ff,#fefbe6);display:flex;align-items:center;justify-content:center;font-weight:700;color:rgba(10,30,60,0.6)}
+
+    /* features */
+    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+    .feature{padding:14px;border-radius:12px;background:var(--card);backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.18)}
+
+    footer{margin-top:26px;padding:18px 0;border-top:1px solid rgba(10,20,40,0.04)}
+
+    /* responsive */
+    @media (max-width:900px){
+      .hero-grid{grid-template-columns:1fr}
+      .search-row{flex-direction:column}
+    }
+
+    /* small helpers */
+    .row{display:flex;gap:12px;align-items:center}
+    .pill-btn{background:white;padding:8px 10px;border-radius:10px;border:1px solid rgba(10,20,40,0.05)}
+    .theme-toggle{cursor:pointer}
+
+    /* subtle animations */
+    .hover-raise{transition:transform .22s ease, box-shadow .22s ease}
+    .hover-raise:hover{transform:translateY(-6px)}
+
+    /* Dark mode */
+    .dark{background:linear-gradient(180deg,#061025,#071428);color:#e6eefc}
+    .dark .card{background:linear-gradient(180deg, rgba(10,20,40,0.6), rgba(10,20,40,0.5));border:1px solid rgba(255,255,255,0.04)}
+    .dark .search-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04)}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">WanderWorld</div>
+        <div class="muted">Discover. Dream. Depart.</div>
+      </div>
+
+      <nav>
+        <a href="#dest">Destinations</a>
+        <a href="#planner">AI Planner</a>
+        <a href="#deals">Deals</a>
+        <button class="cta" id="themeBtn">Toggle Theme</button>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <h1>Find your next escape — all in one travel hub</h1>
+          <p class="tag">Flights, hotels, itineraries, visa info, price alerts and community tips — simple, fast and beautiful.</p>
+
+          <div style="margin-top:18px" class="search-card hover-raise">
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
+              <div style="flex:1">
+                <div style="font-weight:700">Search Your Next Adventure</div>
+                <div class="muted" style="font-size:13px">Try: Goa, Paris, Bali, Shimla</div>
+              </div>
+              <div style="font-size:13px;color:var(--muted)">Budget: ₹</div>
+            </div>
+
+            <div class="search-row">
+              <input type="text" id="destInput" placeholder="Destination or interest (beach, trekking...)">
+              <input type="text" id="dateInput" placeholder="Dates (e.g. 2025-12-20 to 2025-12-27)">
+              <select id="typeSelect"><option>Any</option><option>Beach</option><option>Mountain</option><option>City</option><option>Adventure</option></select>
+              <button class="search-btn" onclick="doSearch()">Explore Now</button>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+              <div class="pill">One-click booking</div>
+              <div class="pill">Auto currency</div>
+              <div class="pill">Price alerts</div>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:16px">
+            <div class="card hover-raise">
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcd" alt="beach">
+              <div style="margin-top:10px;font-weight:700">Bali, Indonesia</div>
+              <div class="muted">From ₹22,500 · 5 days</div>
+            </div>
+
+            <div class="card hover-raise">
+              <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcd" alt="mountain">
+              <div style="margin-top:10px;font-weight:700">Manali, India</div>
+              <div class="muted">From ₹8,900 · 4 days</div>
+            </div>
+
+            <div class="card hover-raise">
+              <img src="https://images.unsplash.com/photo-1505765056533-1b04f5afc8a2?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcd" alt="city">
+              <div style="margin-top:10px;font-weight:700">Paris, France</div>
+              <div class="muted">From ₹45,000 · 6 days</div>
+            </div>
+          </div>
+
+        </div>
+
+        <aside>
+          <div class="ai-planner">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700">AI Travel Planner</div>
+              <div class="muted" style="font-size:13px">Tell the planner your budget & days</div>
+            </div>
+
+            <div id="aiChat" class="ai-chat" aria-live="polite">
+              <div class="muted">Planner: Hi! Type something like "₹30,000 and 5 days"</div>
+            </div>
+
+            <div class="ai-input">
+              <input id="aiInput" placeholder="e.g. ₹30,000 and 5 days" />
+              <button class="search-btn" onclick="aiRespond()">Plan</button>
+            </div>
+
+            <div style="margin-top:10px" class="muted" id="plannerNote">Auto itinerary suggestions, links to book, and packing tips.</div>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <div class="card">
+            <div style="font-weight:700">Price Tracker</div>
+            <div class="muted" style="font-size:13px">Track fares for a route and get notified</div>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+              <input id="trackRoute" placeholder="From → To (e.g. Mumbai → Dubai)" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e6eefc">
+              <button class="pill-btn" onclick="addTracker()">Track</button>
+            </div>
+            <div style="margin-top:10px" id="trackList"></div>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <div class="card">
+            <div style="font-weight:700">Visa Checker</div>
+            <div class="muted" style="font-size:13px">Quick rules for tourists</div>
+            <div style="margin-top:8px" class="muted">Type a country in planner for a short note.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="dest">
+      <h2 style="font-family:'Poppins';font-size:20px;margin:6px 0">Popular Destinations</h2>
+      <div class="grid">
+        <div class="card hover-raise">
+          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcd" alt="Tokyo">
+          <div style="margin-top:10px;font-weight:700">Tokyo, Japan</div>
+          <div class="muted">Food, culture & neon nights</div>
+        </div>
+
+        <div class="card hover-raise">
+          <img src="https://images.unsplash.com/photo-1505765062274-38a9ee1f9b4e?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcd" alt="New York">
+          <div style="margin-top:10px;font-weight:700">New York, USA</div>
+          <div class="muted">City sightseeing & shows</div>
+        </div>
+
+        <div class="card hover-raise">
+          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcd" alt="Iceland">
+          <div style="margin-top:10px;font-weight:700">Reykjavík, Iceland</div>
+          <div class="muted">Northern lights & hot springs</div>
+        </div>
+
+      </div>
+    </section>
+
+    <section style="margin-top:18px">
+      <h2 style="font-family:'Poppins';font-size:20px;margin:6px 0">Interactive Map</h2>
+      <div class="map" id="map">Click any country pin (demo) — Try: India, France, Thailand</div>
+    </section>
+
+    <section id="deals" style="margin-top:18px">
+      <h2 style="font-family:'Poppins';font-size:20px;margin:6px 0">Deals & Flash Sales</h2>
+      <div class="features">
+        <div class="feature">Flash Deal: Maldives 40% off — <span class="muted">2 days left</span></div>
+        <div class="feature">Student discounts on train passes</div>
+        <div class="feature">Last-minute weekend escapes</div>
+        <div class="feature">Eco-travel packages with local guides</div>
+      </div>
+    </section>
+
+    <footer>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div class="muted">© 2025 WanderWorld • Built with care</div>
+        <div class="row">
+          <input placeholder="Subscribe to newsletter" style="padding:8px;border-radius:8px;border:1px solid #e6eefc">
+          <button class="pill-btn">Subscribe</button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // small helper UI interactions
+    const aiChat = document.getElementById('aiChat');
+    const aiInput = document.getElementById('aiInput');
+    const themeBtn = document.getElementById('themeBtn');
+    let dark=false;
+    themeBtn.addEventListener('click', ()=>{
+      dark = !dark;
+      document.body.classList.toggle('dark', dark);
+      themeBtn.textContent = dark? 'Light Mode' : 'Toggle Theme';
+    });
+
+    function appendMsg(text, who='bot'){
+      const d = document.createElement('div');
+      d.style.margin='8px 0';
+      d.style.padding='8px';
+      d.style.borderRadius='8px';
+      if(who==='bot'){
+        d.style.background='linear-gradient(90deg, rgba(30,144,255,0.08), rgba(167,201,87,0.03))';
+        d.style.fontWeight='600';
+        d.textContent = 'Planner: ' + text;
+      } else {
+        d.style.background='rgba(0,0,0,0.04)'; d.textContent = 'You: ' + text;
+      }
+      aiChat.appendChild(d);
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+
+    function aiRespond(){
+      const v = aiInput.value.trim();
+      if(!v) return;
+      appendMsg(v,'user');
+
+      // simple rule-based mock AI (no backend) — will parse budget and days
+      const budMatch = v.match(/₹?\s?([0-9,]+)\s*(k|K|,)?/);
+      const daysMatch = v.match(/(\d+)\s*days?/i);
+      let budget, days;
+      if(budMatch) budget = budMatch[1].replace(/,/g,'');
+      if(daysMatch) days = daysMatch[1];
+
+      setTimeout(()=>{
+        if(budget && days){
+          const b = parseInt(budget);
+          const d = parseInt(days);
+          // basic suggestion logic
+          let suggestion = '';
+          if(b < 15000) suggestion = 'Try destinations like Goa (India), Pokhara (Nepal), or Hampi — wallet-friendly and beautiful for ' + d + ' days.';
+          else if(b < 40000) suggestion = 'Consider Bali, Sri Lanka or Thailand for ' + d + ' days with comfortable stays and activities.';
+          else suggestion = 'You can aim for Maldives, Dubai or short Europe trips — great for ' + d + ' days.';
+
+          appendMsg(suggestion);
+          appendMsg('I created a quick itinerary and pack list. Use the Book button to compare flights & hotels (demo).');
+        } else {
+          appendMsg('Tell me your approximate budget and how many days you have. Example: "₹30,000 and 5 days"');
+        }
+      },700);
+
+      aiInput.value='';
+    }
+
+    function doSearch(){
+      const d = document.getElementById('destInput').value || 'Popular places';
+      alert('Searching trips for: ' + d + '\n(This demo searches locally. In production connect to flight/hotel APIs.)');
+    }
+
+    // Price tracker demo
+    const trackers = [];
+    function addTracker(){
+      const route = document.getElementById('trackRoute').value.trim();
+      if(!route) return alert('Enter route like Mumbai → Dubai');
+      trackers.push({route, price: Math.floor(5000 + Math.random()*45000)});
+      renderTrackers();
+      document.getElementById('trackRoute').value='';
+    }
+    function renderTrackers(){
+      const el = document.getElementById('trackList'); el.innerHTML='';
+      trackers.forEach(t=>{
+        const div = document.createElement('div'); div.style.marginTop='8px';
+        div.innerHTML = `<div style=\"display:flex;justify-content:space-between;align-items:center\"><div><strong>${t.route}</strong><div class=\"muted\">Current: ₹${t.price}</div></div><button class=\"pill-btn\" onclick=\"alert(\\\'You will be notified when price drops (demo)\\\')\">Notify me</button></div>`;
+        el.appendChild(div);
+      })
+    }
+
+    // Map demo: simple clickable demo replaced by prompt
+    document.getElementById('map').addEventListener('click', ()=>{
+      const c = prompt('Type a country name (e.g. India, France, Thailand)');
+      if(!c) return;
+      alert(c + ': Best months to visit, quick visa note and sample itinerary (demo).');
+    });
+
+    // accessible quick sample content for first load
+    document.addEventListener('DOMContentLoaded', ()=>{
+      appendMsg('Welcome! Try: "₹30,000 and 5 days" or "I want beaches"');
+    });
+
+  </script>
+</body>
+</html>
+
+wanderworlds.my.canva.site/bs5f8w9s3hdtsgjb
+https://wanderworlds.my.canva.site/bs5f8w9s3hdtsgjb
